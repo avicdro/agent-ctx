@@ -19,7 +19,7 @@ import {
 } from '../dist/lib/utils.js';
 
 // Directorio temporal para tests
-const TEST_DIR = join(tmpdir(), 'agentrc-test-' + Date.now());
+const TEST_DIR = join(tmpdir(), 'agent-ctx-test-' + Date.now());
 
 describe('utils', () => {
   beforeEach(() => {
@@ -33,7 +33,7 @@ describe('utils', () => {
   describe('resolveDirectory', () => {
     it('debería resolver un directorio existente', () => {
       const result = resolveDirectory(TEST_DIR);
-      assert.ok(result.includes('agentrc-test'));
+      assert.ok(result.includes('agent-ctx-test'));
     });
 
     it('debería lanzar error para directorio inexistente', () => {

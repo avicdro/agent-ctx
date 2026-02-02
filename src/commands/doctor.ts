@@ -189,7 +189,7 @@ export async function doctorCommand(directory: string, options: DoctorOptions): 
       succeedSpinner(`${fixed} problema(s) reparado(s)`);
       logger.summary('🔧 Reparaciones aplicadas');
     } else if (issues.length > 0) {
-      logger.log('\n💡 Ejecuta `agentrc doctor --fix` para reparar automáticamente.');
+      logger.log('\n💡 Ejecuta `agent-ctx doctor --fix` para reparar automáticamente.');
     }
     
   } catch (error) {

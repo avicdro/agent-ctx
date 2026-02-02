@@ -1,5 +1,5 @@
 {
-  "name": "agentrc",
+  "name": "agent-ctx",
   "version": "1.0.0",
   "description": "CLI tool to initialize and manage AI agent context for your projects",
   "keywords": [
@@ -17,7 +17,7 @@
   "license": "MIT",
   "type": "module",
   "bin": {
-    "agentrc": "./dist/bin/agentrc.js"
+    "agent-ctx": "./dist/bin/agent-ctx.js"
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

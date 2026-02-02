@@ -86,4 +86,4 @@ Una vez terminada la configuración:
 
 ---
 
-*Este archivo fue generado por agentrc. Es un ayudante de una sola vez y debe eliminarse después de usarlo.*
+*Este archivo fue generado por agent-ctx. Es un ayudante de una sola vez y debe eliminarse después de usarlo.*

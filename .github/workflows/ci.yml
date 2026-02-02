@@ -31,7 +31,7 @@ jobs:
         run: npm test
       
       - name: Check CLI help
-        run: node dist/bin/agentrc.js --help
+        run: node dist/bin/agent-ctx.js --help
 
   lint:
     runs-on: ubuntu-latest

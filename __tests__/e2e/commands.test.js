@@ -12,7 +12,7 @@ import { mkdirSync, rmSync, existsSync, readdirSync, readFileSync, writeFileSync
 import { join, resolve } from 'path';
 
 // Ruta al CLI compilado
-const CLI_PATH = resolve(import.meta.dirname, '../../dist/bin/agentrc.js');
+const CLI_PATH = resolve(import.meta.dirname, '../../dist/bin/agent-ctx.js');
 
 // Carpeta de pruebas E2E
 const E2E_TEST_FOLDER = resolve(import.meta.dirname, '../../test_e2e_fold');

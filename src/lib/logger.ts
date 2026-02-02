@@ -74,7 +74,7 @@ export const logger = {
 
   logo: (): void => {
     if (quietMode) return;
-    console.log(chalk.blue(figlet.textSync('agentrc', {
+    console.log(chalk.blue(figlet.textSync('agent-ctx', {
       font: 'Standard',
       horizontalLayout: 'default',
       verticalLayout: 'default'

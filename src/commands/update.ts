@@ -105,7 +105,7 @@ export async function updateCommand(directory: string, options: UpdateOptions): 
     
     // Resumen
     logger.summary('✨ Actualización completada');
-    logger.log('\nTus archivos puente ahora usan la última versión de agentrc.');
+    logger.log('\nTus archivos puente ahora usan la última versión de agent-ctx.');
     
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);

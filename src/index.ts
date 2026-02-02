@@ -26,7 +26,7 @@ export function run() {
   const program = new Command();
 
   program
-    .name('agentrc')
+    .name('agent-ctx')
     .description('CLI tool to initialize and manage AI agent context for your projects')
     .version(pkg.version, '-v, --version', 'Show version number')
     .option('-q, --quiet', 'Suppress non-essential output')
