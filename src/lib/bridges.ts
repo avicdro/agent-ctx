@@ -1,0 +1,188 @@
+/**
+ * @fileoverview Generación de archivos puente para diferentes editores/agentes AI
+ * @module lib/bridges
+ */
+
+import { readFileSync } from 'fs';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+import { t } from './i18n.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// Leer versión desde package.json
+const pkg = JSON.parse(readFileSync(join(__dirname, '../../package.json'), 'utf-8')) as { version: string };
+
+const VERSION: string = pkg.version;
+
+export interface BridgeConfig {
+  name: string;
+  generator: () => string;
+  needsDir?: string;
+}
+
+/**
+ * Genera contenido para .cursor/rules/global.md (nuevo formato con frontmatter)
+ */
+export function getCursorGlobalRules(): string {
+  return `---
+description: "Global project rules and context from .context/"
+globs: "**/*"
+alwaysApply: true
+---
+# ${t('bridge.generatedBy', { version: VERSION })}
+
+${t('bridge.readAgents')}
+
+## Context Structure
+
+This project uses a centralized context structure in \`.context/\`:
+
+- **Architecture:** .context/architecture.md
+- **Rules:** .context/rules/
+- **Skills:** .context/skills/
+- **Docs:** .context/docs/
+- **Project State:** .context/project_state.md
+
+Please read AGENTS.md for the complete project overview.
+`;
+}
+
+// Legacy generators removed - editors now read AGENTS.md directly
+
+/**
+ * Genera contenido de CLAUDE.md para Claude Code
+ */
+export function getClaudeMd(): string {
+  return `# Claude Code Context
+# ${t('bridge.generatedBy', { version: VERSION })}
+
+## ${t('bridge.copilotInstructions')}
+
+${t('bridge.claudeIntro')}
+${t('bridge.claudeReadContext')}
+
+1. **${t('bridge.architecture')}** .context/architecture.md
+2. **${t('bridge.rules')}** .context/rules/coding-standards.md
+3. **${t('bridge.skills')}** .context/skills/
+4. **Project State:** .context/project_state.md
+
+## ${t('bridge.principles')}
+
+- ${t('bridge.followRules')}
+- ${t('bridge.usePatterns')}
+- ${t('bridge.maintainConsistency')}`;
+}
+
+/**
+ * Genera contenido de .github/copilot-instructions.md para GitHub Copilot (global)
+ */
+export function getCopilotInstructions(): string {
+  return `# GitHub Copilot Instructions
+# ${t('bridge.generatedBy', { version: VERSION })}
+
+## ${t('bridge.copilotContext')}
+
+${t('bridge.copilotContextDesc')}
+
+## ${t('bridge.copilotInstructions')}
+
+1. ${t('bridge.copilotReadAgents')}
+2. ${t('bridge.copilotFollowRules')}
+3. ${t('bridge.copilotUsePatterns')}
+
+## ${t('bridge.mainRules')}
+
+- ${t('bridge.useStrictTS')}
+- ${t('bridge.followNaming')}
+- ${t('bridge.addErrorHandling')}`;
+}
+
+/**
+ * Genera contenido para .github/instructions/context.instructions.md (escopado)
+ */
+export function getCopilotContextInstructions(): string {
+  return `---
+applyTo: "**/*"
+---
+# Project Context Instructions
+# ${t('bridge.generatedBy', { version: VERSION })}
+
+This project uses a centralized context structure in \`.context/\`.
+
+Before making any changes, please review:
+- **AGENTS.md** - Project overview and guidelines
+- **.context/architecture.md** - Technical architecture
+- **.context/rules/** - Coding standards
+- **.context/project_state.md** - Current state and TODOs
+`;
+}
+
+// Aider conventions generator removed - reads AGENTS.md directly
+
+/**
+ * Genera contenido de .agent/rules/context.md para Antigravity
+ */
+export function getAntigravityRules(): string {
+  return `# Project Context Rules
+# ${t('bridge.generatedBy', { version: VERSION })}
+
+## ${t('bridge.copilotInstructions')}
+
+${t('bridge.antigravityIntro')}
+
+This project uses a centralized context structure in \`.context/\`:
+
+- **Architecture:** .context/architecture.md
+- **Rules:** .context/rules/
+- **Skills:** .context/skills/
+- **Docs:** .context/docs/
+- **Project State:** .context/project_state.md
+- **Memory Bank:** .context/memory/
+
+## ${t('bridge.principles')}
+
+- ${t('bridge.followRules')}
+- ${t('bridge.usePatterns')}
+- ${t('bridge.maintainConsistency')}
+
+Please read AGENTS.md for the complete project overview.
+`;
+}
+
+/**
+ * Mapa de todos los archivos puente disponibles (solo formatos modernos)
+ * Los formatos legacy han sido eliminados - los editores ahora leen AGENTS.md directamente
+ */
+export const BRIDGE_FILES: Record<string, BridgeConfig> = {
+  // Cursor - Formato moderno con frontmatter
+  '.cursor/rules/global.md': {
+    name: 'Cursor (Modern)',
+    generator: getCursorGlobalRules,
+    needsDir: '.cursor/rules'
+  },
+  // Claude Code
+  'CLAUDE.md': {
+    name: 'Claude Code',
+    generator: getClaudeMd
+  },
+  // Copilot - Global
+  '.github/copilot-instructions.md': {
+    name: 'GitHub Copilot (Global)',
+    generator: getCopilotInstructions,
+    needsDir: '.github'
+  },
+  // Copilot - Escopado
+  '.github/instructions/context.instructions.md': {
+    name: 'GitHub Copilot (Scoped)',
+    generator: getCopilotContextInstructions,
+    needsDir: '.github/instructions'
+  },
+  // Antigravity - Reglas de proyecto
+  '.agent/rules/context.md': {
+    name: 'Antigravity',
+    generator: getAntigravityRules,
+    needsDir: '.agent/rules'
+  }
+};
