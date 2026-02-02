@@ -12,6 +12,7 @@ import { resolveDirectory, validateNotRoot, ensureDir, writeFile } from '../lib/
 import { copyTemplate, TEMPLATE_MAPPINGS, BASE_SKILLS, MEMORY_BANK, BOOTSTRAP_TEMPLATE } from '../lib/templates.js';
 import { BRIDGE_FILES } from '../lib/bridges.js';
 import { setLanguage, LANGUAGES, t, type SupportedLanguage } from '../lib/i18n.js';
+import { loadConfig, filterEditorsByConfig, hasConfig } from '../lib/config.js';
 
 export interface InitOptions {
   yes?: boolean;
@@ -28,11 +29,15 @@ export async function initCommand(directory: string, options: InitOptions): Prom
     validateNotRoot(targetDir);
     
     const { yes = false, force = false, dryRun = false } = options;
+
+    // Cargar configuración existente
+    const config = loadConfig(targetDir);
+    const hasExistingConfig = hasConfig(targetDir);
     
     // Determinar idioma (antes de cualquier otra cosa)
-    let selectedLanguage: SupportedLanguage = 'en'; // Default: English
+    let selectedLanguage: SupportedLanguage = config.language || 'en'; // Default: Config or English
     
-    if (!yes && !dryRun) {
+    if (!yes && !dryRun && !hasExistingConfig) {
       const langAnswer = await inquirer.prompt([
         {
           type: 'list',
@@ -66,6 +71,9 @@ export async function initCommand(directory: string, options: InitOptions): Prom
     if (dryRun) {
       logger.log(t('init.modeDryRun'));
     }
+    if (hasExistingConfig) {
+      logger.log(chalk.cyan(`📄 Config loaded from .agent-ctx.json`));
+    }
     
     // Determinar tipo de inicialización
     let initType: 'quick' | 'custom' = 'quick';
@@ -97,10 +105,10 @@ export async function initCommand(directory: string, options: InitOptions): Prom
             type: 'checkbox',
             name: 'editors',
             message: t('prompt.selectEditors'),
-            choices: Object.entries(BRIDGE_FILES).map(([file, config]) => ({
-              name: config.name,
+            choices: Object.entries(BRIDGE_FILES).map(([file, configBridge]) => ({
+              name: configBridge.name,
               value: file,
-              checked: true
+              checked: config.editors.includes(configBridge.name) || config.editors.includes(file) || config.editors.length === 0
             }))
           }
         ]);
@@ -130,11 +138,11 @@ export async function initCommand(directory: string, options: InitOptions): Prom
     const contextDir = join(targetDir, '.context');
     const subDirs = ['rules', 'skills', 'docs', 'mcp', 'memory'];
     
-    ensureDir(contextDir, { dryRun, silent: true });
+    ensureDir(contextDir, { dryRun, silent: true, backup: config.backups });
     
     for (const subDir of subDirs) {
       const subPath = join(contextDir, subDir);
-      ensureDir(subPath, { dryRun, silent: true });
+      ensureDir(subPath, { dryRun, silent: true, backup: config.backups });
     }
     
     succeedSpinner(t('spinner.contextCreated'));
@@ -142,12 +150,12 @@ export async function initCommand(directory: string, options: InitOptions): Prom
     // 2. Copiar templates
     startSpinner(t('spinner.copyingTemplates'));
     
-    for (const [templateName, config] of Object.entries(TEMPLATE_MAPPINGS)) {
-      const destPath = config.isRoot 
-        ? join(targetDir, config.dest)
-        : join(targetDir, config.dest);
+    for (const [templateName, templateConfig] of Object.entries(TEMPLATE_MAPPINGS)) {
+      const destPath = templateConfig.isRoot 
+        ? join(targetDir, templateConfig.dest)
+        : join(targetDir, templateConfig.dest);
       
-      copyTemplate(templateName, destPath, { force, dryRun, silent: true });
+      copyTemplate(templateName, destPath, { force, dryRun, silent: true, backup: config.backups });
     }
     
     succeedSpinner(t('spinner.templatesCopied'));
@@ -155,9 +163,9 @@ export async function initCommand(directory: string, options: InitOptions): Prom
     // 2.5. Instalar BASE_SKILLS (skills fundamentales con estructura de carpetas)
     startSpinner('Installing base skills...');
     
-    for (const [templateName, config] of Object.entries(BASE_SKILLS)) {
-      const destPath = join(targetDir, config.dest);
-      copyTemplate(templateName, destPath, { force, dryRun, silent: true });
+    for (const [templateName, skillConfig] of Object.entries(BASE_SKILLS)) {
+      const destPath = join(targetDir, skillConfig.dest);
+      copyTemplate(templateName, destPath, { force, dryRun, silent: true, backup: config.backups });
     }
     
     succeedSpinner(`Base skills installed (${Object.keys(BASE_SKILLS).length} skills)`);
@@ -165,9 +173,9 @@ export async function initCommand(directory: string, options: InitOptions): Prom
     // 2.6. Instalar Memory Bank (persistencia de contexto)
     startSpinner('Installing Memory Bank...');
     
-    for (const [templateName, config] of Object.entries(MEMORY_BANK)) {
-      const destPath = join(targetDir, config.dest);
-      copyTemplate(templateName, destPath, { force, dryRun, silent: true });
+    for (const [templateName, memConfig] of Object.entries(MEMORY_BANK)) {
+      const destPath = join(targetDir, memConfig.dest);
+      copyTemplate(templateName, destPath, { force, dryRun, silent: true, backup: config.backups });
     }
     
     succeedSpinner(`Memory Bank installed (${Object.keys(MEMORY_BANK).length} files)`);
@@ -176,17 +184,17 @@ export async function initCommand(directory: string, options: InitOptions): Prom
     if (initType === 'custom' && selectedEditors.length > 0) {
       startSpinner(t('spinner.generatingBridges'));
       
-      for (const [file, config] of Object.entries(BRIDGE_FILES)) {
+      for (const [file, bridgeConfig] of Object.entries(BRIDGE_FILES)) {
         if (!selectedEditors.includes(file)) continue;
         
         // Crear directorio si es necesario
-        if (config.needsDir) {
-          ensureDir(join(targetDir, config.needsDir), { dryRun, silent: true });
+        if (bridgeConfig.needsDir) {
+          ensureDir(join(targetDir, bridgeConfig.needsDir), { dryRun, silent: true, backup: config.backups });
         }
         
         const filePath = join(targetDir, file);
-        const content = config.generator();
-        writeFile(filePath, content, { force, dryRun, silent: true });
+        const content = bridgeConfig.generator();
+        writeFile(filePath, content, { force, dryRun, silent: true, backup: config.backups });
       }
       
       succeedSpinner(t('spinner.bridgesGenerated', { count: selectedEditors.length }));
@@ -195,7 +203,7 @@ export async function initCommand(directory: string, options: InitOptions): Prom
     // 4. Crear AI Bootstrap Prompt (si se solicitó)
     if (createBootstrap) {
       const destPath = join(targetDir, BOOTSTRAP_TEMPLATE.dest);
-      copyTemplate('base/_bootstrap.md', destPath, { force, dryRun, silent: true });
+      copyTemplate('base/_bootstrap.md', destPath, { force, dryRun, silent: true, backup: config.backups });
       logger.log('');
       logger.success(t('init.bootstrapGenerated'));
     }

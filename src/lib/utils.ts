@@ -11,6 +11,7 @@ export interface FileOperationOptions {
   force?: boolean;
   dryRun?: boolean;
   silent?: boolean;
+  backup?: boolean;
 }
 
 /**
@@ -68,7 +69,7 @@ export function ensureDir(dir: string, options: FileOperationOptions = {}): bool
  * Copia un archivo con opciones de force y backup
  */
 export function copyFile(src: string, dest: string, options: FileOperationOptions = {}): boolean {
-  const { force = false, dryRun = false, silent = false } = options;
+  const { force = false, dryRun = false, silent = false, backup = true } = options;
   const name = basename(dest);
   
   if (!existsSync(src)) {
@@ -92,8 +93,8 @@ export function copyFile(src: string, dest: string, options: FileOperationOption
     mkdirSync(parentDir, { recursive: true });
   }
   
-  // Crear backup si existe y hay force
-  if (existsSync(dest) && force) {
+  // Crear backup si existe y hay force, y los backups están habilitados
+  if (existsSync(dest) && force && backup) {
     copyFileSync(dest, `${dest}.bak`);
     if (!silent) logger.item(`${name}.bak (backup created)`);
   }
@@ -107,7 +108,7 @@ export function copyFile(src: string, dest: string, options: FileOperationOption
  * Escribe contenido a un archivo con opciones de force y backup
  */
 export function writeFile(path: string, content: string, options: FileOperationOptions = {}): boolean {
-  const { force = false, dryRun = false, silent = false } = options;
+  const { force = false, dryRun = false, silent = false, backup = true } = options;
   const name = basename(path);
   
   if (existsSync(path) && !force) {
@@ -120,8 +121,8 @@ export function writeFile(path: string, content: string, options: FileOperationO
     return true;
   }
   
-  // Crear backup si existe y hay force
-  if (existsSync(path) && force) {
+  // Crear backup si existe y hay force, y los backups están habilitados
+  if (existsSync(path) && force && backup) {
     copyFileSync(path, `${path}.bak`);
     if (!silent) logger.item(`${name}.bak (backup created)`);
   }

@@ -10,6 +10,7 @@ import inquirer from 'inquirer';
 import { logger, startSpinner, succeedSpinner } from '../lib/logger.js';
 import { resolveDirectory, validateNotRoot, ensureDir, writeFile } from '../lib/utils.js';
 import { BRIDGE_FILES } from '../lib/bridges.js';
+import { loadConfig } from '../lib/config.js';
 
 export interface UpdateOptions {
   yes?: boolean;
@@ -25,6 +26,9 @@ export async function updateCommand(directory: string, options: UpdateOptions): 
     validateNotRoot(targetDir);
     
     const { yes, force } = options;
+
+    // Cargar configuración
+    const config = loadConfig(targetDir);
     
     // Header
     logger.header('🔄 Actualización de archivos puente');
@@ -85,19 +89,19 @@ export async function updateCommand(directory: string, options: UpdateOptions): 
     const spinner = startSpinner('Actualizando archivos puente...');
     
     let updated = 0;
-    for (const [file, config] of Object.entries(BRIDGE_FILES)) {
+    for (const [file, configBridge] of Object.entries(BRIDGE_FILES)) {
       if (!selectedEditors.includes(file)) continue;
       
       // Crear directorio si es necesario
-      if (config.needsDir) {
-        ensureDir(join(targetDir, config.needsDir), { dryRun: false });
+      if (configBridge.needsDir) {
+        ensureDir(join(targetDir, configBridge.needsDir), { dryRun: false, backup: config.backups });
       }
       
       const filePath = join(targetDir, file);
-      const content = config.generator();
+      const content = configBridge.generator();
       
       // Usar force:true porque el usuario eligió explícitamente actualizar
-      writeFile(filePath, content, { force: true, dryRun: false });
+      writeFile(filePath, content, { force: true, dryRun: false, backup: config.backups });
       updated++;
     }
     
