@@ -1,6 +1,6 @@
 {
   "name": "agent-ctx",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "CLI tool to initialize and manage AI agent context for your projects",
   "keywords": [
     "ai",
