@@ -1,5 +1,5 @@
 /**
- * Tests E2E para los comandos del CLI agentrc
+ * Tests E2E para los comandos del CLI agent-ctx
  * 
  * Estos tests ejecutan los comandos reales del CLI y verifican
  * que producen los resultados esperados en el sistema de archivos.

@@ -1,5 +1,5 @@
 /**
- * agentrc - CLI Principal
+ * agent-ctx - CLI Principal
  * Registra todos los comandos y maneja la ejecución
  */
 

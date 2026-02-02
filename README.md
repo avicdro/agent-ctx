@@ -89,7 +89,7 @@ npx agent-ctx doctor --fix            # Repara automáticamente
 
 ## Configuración por proyecto
 
-Crea un archivo `.agentrc.json` en la raíz del proyecto:
+Crea un archivo `.agent-ctx.json` en la raíz del proyecto:
 
 ```json
 {

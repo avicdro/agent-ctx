@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * agentrc - CLI for AI Agent Context Management
+ * agent-ctx - CLI for AI Agent Context Management
  * Entry point
  */
 

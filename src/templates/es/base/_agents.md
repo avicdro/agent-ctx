@@ -57,6 +57,6 @@ Ejemplos:
 
 ## Notas
 
-- Este archivo fue generado por [agentrc](https://github.com/avicdro/agentrc)
+- Este archivo fue generado por [agent-ctx](https://github.com/avicdro/agent-ctx)
 - Personaliza todos los archivos `.context/` según tu proyecto
 - Mantén este archivo actualizado conforme evoluciona tu proyecto

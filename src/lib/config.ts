@@ -8,9 +8,9 @@ import { logger } from './logger.js';
 import type { SupportedLanguage } from './i18n.js';
 
 // Nombre del archivo de configuración
-const CONFIG_FILENAME = '.agentrc.json';
+const CONFIG_FILENAME = '.agent-ctx.json';
 
-export interface AgentrcConfig {
+export interface AgentCtxConfig {
   editors: string[];
   language: SupportedLanguage;
   backups: boolean;
@@ -18,7 +18,7 @@ export interface AgentrcConfig {
 }
 
 // Configuración por defecto
-const DEFAULT_CONFIG: AgentrcConfig = {
+const DEFAULT_CONFIG: AgentCtxConfig = {
   editors: ['cursor', 'antigravity', 'cline', 'roo', 'claude', 'copilot'],
   language: 'en',
   backups: true,
@@ -28,7 +28,7 @@ const DEFAULT_CONFIG: AgentrcConfig = {
 /**
  * Carga la configuración del proyecto
  */
-export function loadConfig(projectDir: string): AgentrcConfig {
+export function loadConfig(projectDir: string): AgentCtxConfig {
   const configPath = join(projectDir, CONFIG_FILENAME);
   
   if (!existsSync(configPath)) {
@@ -37,7 +37,7 @@ export function loadConfig(projectDir: string): AgentrcConfig {
   
   try {
     const content = readFileSync(configPath, 'utf-8');
-    const userConfig = JSON.parse(content) as Partial<AgentrcConfig>;
+    const userConfig = JSON.parse(content) as Partial<AgentCtxConfig>;
     
     // Fusionar con defaults
     return {
@@ -61,7 +61,7 @@ export function hasConfig(projectDir: string): boolean {
 /**
  * Obtiene la configuración por defecto
  */
-export function getDefaultConfig(): AgentrcConfig {
+export function getDefaultConfig(): AgentCtxConfig {
   return { ...DEFAULT_CONFIG };
 }
 
@@ -80,7 +80,7 @@ export const EDITOR_MAP: Record<string, string> = {
 /**
  * Filtra los editores según la configuración
  */
-export function filterEditorsByConfig(allEditors: string[], config: AgentrcConfig): string[] {
+export function filterEditorsByConfig(allEditors: string[], config: AgentCtxConfig): string[] {
   if (!config.editors || config.editors.length === 0) {
     return allEditors;
   }
