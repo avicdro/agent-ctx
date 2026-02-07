@@ -30,7 +30,11 @@
     "dev": "tsx src/index.ts",
     "test": "npm run build && node --test",
     "lint": "eslint src/",
-    "prepublishOnly": "npm run build"
+    "lint:fix": "eslint src/ --fix",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "format:check": "prettier --check \"src/**/*.ts\"",
+    "prepublishOnly": "npm run build",
+    "prepare": "husky"
   },
   "dependencies": {
     "chalk": "^5.3.0",
@@ -41,13 +45,20 @@
     "tar": "^7.5.7"
   },
   "devDependencies": {
+    "@commitlint/cli": "^20.4.1",
+    "@commitlint/config-conventional": "^20.4.1",
     "@types/figlet": "^1.7.0",
     "@types/inquirer": "^9.0.9",
     "@types/node": "^25.1.0",
     "@types/tar": "^6.1.13",
     "eslint": "^9.39.2",
+    "eslint-config-prettier": "^10.1.8",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.7",
+    "prettier": "^3.8.1",
     "tsx": "^4.21.0",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.54.0"
   },
   "engines": {
     "node": ">=18.0.0"
