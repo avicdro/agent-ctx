@@ -44,7 +44,11 @@ export function readTemplate(name: string, lang?: SupportedLanguage): string {
 /**
  * Copia un template a la ruta de destino
  */
-export function copyTemplate(name: string, destPath: string, options: FileOperationOptions = {}): boolean {
+export function copyTemplate(
+  name: string,
+  destPath: string,
+  options: FileOperationOptions = {}
+): boolean {
   const srcPath = getTemplatePath(name);
   return copyFile(srcPath, destPath, options);
 }
@@ -58,7 +62,7 @@ export const TEMPLATE_MAPPINGS: Record<string, TemplateMapping> = {
   'base/_project_state.md': { dest: '.context/project_state.md' },
   'rules/rule-coding-standards.md': { dest: '.context/rules/coding-standards.md' },
   'docs/doc-readme.md': { dest: '.context/docs/README.md' },
-  'docs/mcp-readme.md': { dest: '.context/mcp/README.md' }
+  'docs/mcp-readme.md': { dest: '.context/mcp/README.md' },
 };
 
 /**
@@ -67,30 +71,38 @@ export const TEMPLATE_MAPPINGS: Record<string, TemplateMapping> = {
 export const BOOTSTRAP_TEMPLATE: TemplateMapping = {
   dest: 'AI_BOOTSTRAP.md',
   isRoot: true,
-  name: 'AI Bootstrap Prompt'
+  name: 'AI Bootstrap Prompt',
 };
-
 
 /**
  * Templates de skills que se instalan siempre (estructura de carpetas con SKILL.md)
  * Los skills base ayudan al agente a crear y mantener la estructura del proyecto
  */
 export const BASE_SKILLS: Record<string, TemplateMapping> = {
-  'skills/skill-generating.md': { dest: '.context/skills/generating-skills/SKILL.md', name: 'Generating Skills' },
-  'skills/skill-agents.md': { dest: '.context/skills/managing-agents/SKILL.md', name: 'Managing Agents' },
-  'skills/skill-architecture.md': { dest: '.context/skills/documenting-architecture/SKILL.md', name: 'Documenting Architecture' },
-  'skills/skill-rules.md': { dest: '.context/skills/creating-rules/SKILL.md', name: 'Creating Rules' },
-  'skills/skill-project-state.md': { dest: '.context/skills/tracking-project-state/SKILL.md', name: 'Tracking Project State' }
-};
-
-/**
- * Templates de skills opcionales que pueden instalarse (estructura de carpetas con SKILL.md)
- */
-export const OPTIONAL_SKILLS: Record<string, TemplateMapping> = {
-  'skills/skill-react.md': { dest: '.context/skills/react-patterns/SKILL.md', name: 'React Patterns' },
-  'skills/skill-api.md': { dest: '.context/skills/api-design/SKILL.md', name: 'API Design' },
-  'skills/skill-testing.md': { dest: '.context/skills/testing-practices/SKILL.md', name: 'Testing Practices' },
-  'skills/skill-git.md': { dest: '.context/skills/git-workflow/SKILL.md', name: 'Git Workflow' }
+  'skills/skill-generating.md': {
+    dest: '.context/skills/generating-skills/SKILL.md',
+    name: 'Generating Skills',
+  },
+  'skills/skill-agents.md': {
+    dest: '.context/skills/managing-agents/SKILL.md',
+    name: 'Managing Agents',
+  },
+  'skills/skill-architecture.md': {
+    dest: '.context/skills/documenting-architecture/SKILL.md',
+    name: 'Documenting Architecture',
+  },
+  'skills/skill-rules.md': {
+    dest: '.context/skills/creating-rules/SKILL.md',
+    name: 'Creating Rules',
+  },
+  'skills/skill-project-state.md': {
+    dest: '.context/skills/tracking-project-state/SKILL.md',
+    name: 'Tracking Project State',
+  },
+  'skills/skill-memory.md': {
+    dest: '.context/skills/managing-memory/SKILL.md',
+    name: 'Managing Memory Bank',
+  },
 };
 
 /**
@@ -101,5 +113,5 @@ export const MEMORY_BANK: Record<string, TemplateMapping> = {
   'memory/project_brief.md': { dest: '.context/memory/project_brief.md', name: 'Project Brief' },
   'memory/tech_context.md': { dest: '.context/memory/tech_context.md', name: 'Tech Context' },
   'memory/active_context.md': { dest: '.context/memory/active_context.md', name: 'Active Context' },
-  'memory/progress.md': { dest: '.context/memory/progress.md', name: 'Progress' }
+  'memory/progress.md': { dest: '.context/memory/progress.md', name: 'Progress' },
 };

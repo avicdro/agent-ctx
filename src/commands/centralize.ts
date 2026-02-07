@@ -1,12 +1,12 @@
 /**
- * Comando: centralize
- * Busca skills dispersas y las mueve a .context/skills/
+ * Command: centralize
+ * Finds scattered skills and moves them to .context/skills/
  */
 
-import { join, basename } from 'path';
+import { join } from 'path';
 import { existsSync, readdirSync, rmSync, renameSync, statSync } from 'fs';
 
-import { logger, startSpinner, succeedSpinner, warnSpinner } from '../lib/logger.js';
+import { logger, startSpinner, succeedSpinner } from '../lib/logger.js';
 import { resolveDirectory, validateNotRoot, ensureDir, EDITOR_FOLDERS } from '../lib/utils.js';
 
 export interface CentralizeOptions {
@@ -14,81 +14,84 @@ export interface CentralizeOptions {
 }
 
 /**
- * Ejecuta el comando centralize
+ * Executes the centralize command
  */
-export async function centralizeCommand(directory: string, options: CentralizeOptions): Promise<void> {
+export async function centralizeCommand(
+  directory: string,
+  options: CentralizeOptions
+): Promise<void> {
   try {
     const targetDir = resolveDirectory(directory);
     validateNotRoot(targetDir);
-    
+
     const { dryRun = false } = options;
-    
+
     // Header
-    logger.header('🔄 Iniciando centralización de Skills');
-    logger.log(`\n📁 Directorio de trabajo: ${targetDir}`);
-    
+    logger.header('🔄 Starting Skills centralization');
+    logger.log(`\n📁 Working directory: ${targetDir}`);
+
     if (dryRun) {
-      logger.log('🔍 Modo DRY-RUN (solo simulación)');
+      logger.log('🔍 DRY-RUN mode (simulation only)');
     }
-    
+
     const contextDir = join(targetDir, '.context');
     const skillsDir = join(contextDir, 'skills');
     const rulesDir = join(contextDir, 'rules');
-    
-    // Crear directorios si no existen
+
+    // Create directories if they don't exist
     if (!dryRun) {
       ensureDir(skillsDir, { dryRun });
       ensureDir(rulesDir, { dryRun });
     }
-    
-    // Buscar skills dispersas
-    const spinner = startSpinner('Buscando skills dispersas...');
-    
+
+    // Find scattered skills
+    startSpinner('Searching for scattered skills...');
+
     let foundSkills = 0;
     const processedFolders = [];
-    
+
     for (const folder of EDITOR_FOLDERS) {
       const folderPath = join(targetDir, folder);
       const sourceSkills = join(folderPath, 'skills');
-      
+
       if (!existsSync(sourceSkills)) continue;
-      
+
       processedFolders.push(folder);
-      
-      // Listar skills en la carpeta
+
+      // List skills in folder
       const items = readdirSync(sourceSkills);
-      
+
       for (const item of items) {
         const itemPath = join(sourceSkills, item);
         const stat = statSync(itemPath);
-        
+
         if (!stat.isDirectory()) continue;
-        
+
         const targetPath = join(skillsDir, item);
         foundSkills++;
-        
+
         if (existsSync(targetPath)) {
           if (dryRun) {
-            logger.dryRun(`Eliminaría copia redundante: ${item}`);
+            logger.dryRun(`Would delete redundant copy: ${item}`);
           } else {
             rmSync(itemPath, { recursive: true });
           }
         } else {
           if (dryRun) {
-            logger.dryRun(`Movería: ${item} → .context/skills/`);
+            logger.dryRun(`Would move: ${item} → .context/skills/`);
           } else {
             renameSync(itemPath, targetPath);
           }
         }
       }
-      
+
       if (!dryRun) {
-        // Limpiar carpeta skills vacía
+        // Clean empty skills folder
         try {
           rmSync(sourceSkills, { recursive: true });
         } catch {}
-        
-        // Intentar borrar carpeta del editor si quedó vacía
+
+        // Try to delete editor folder if empty
         try {
           const remaining = readdirSync(folderPath);
           if (remaining.length === 0) {
@@ -97,12 +100,12 @@ export async function centralizeCommand(directory: string, options: CentralizeOp
         } catch {}
       }
     }
-    
+
     if (foundSkills === 0) {
-      succeedSpinner('No se encontraron skills dispersas');
+      succeedSpinner('No scattered skills found');
     } else {
-      succeedSpinner(`Procesadas ${foundSkills} skills de ${processedFolders.length} carpeta(s)`);
-      
+      succeedSpinner(`Processed ${foundSkills} skills from ${processedFolders.length} folder(s)`);
+
       if (!dryRun) {
         logger.newline();
         for (const folder of processedFolders) {
@@ -110,16 +113,15 @@ export async function centralizeCommand(directory: string, options: CentralizeOp
         }
       }
     }
-    
-    // Resumen final
+
+    // Final summary
     if (dryRun) {
-      logger.summary('🔍 SIMULACIÓN COMPLETADA', false);
-      logger.log('\nEjecuta sin --dry-run para aplicar los cambios.');
+      logger.summary('🔍 SIMULATION COMPLETE', false);
+      logger.log('\nRun without --dry-run to apply changes.');
     } else {
-      logger.summary('🎉 ¡Centralización completada!');
-      logger.log('\n📁 Tu proyecto ahora usa una arquitectura limpia en .context/');
+      logger.summary('🎉 Centralization complete!');
+      logger.log('\n📁 Your project now uses a clean architecture in .context/');
     }
-    
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     logger.error(message);

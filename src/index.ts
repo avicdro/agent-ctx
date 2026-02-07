@@ -1,6 +1,6 @@
 /**
- * agent-ctx - CLI Principal
- * Registra todos los comandos y maneja la ejecución
+ * agent-ctx - Main CLI
+ * Registers all commands and handles execution
  */
 
 import { Command } from 'commander';
@@ -19,7 +19,7 @@ import { setQuietMode } from './lib/logger.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// Leer versión desde package.json
+// Read version from package.json
 const pkg = JSON.parse(readFileSync(join(__dirname, '../package.json'), 'utf-8'));
 
 export function run() {
@@ -37,7 +37,7 @@ export function run() {
       }
     });
 
-  // Comando: init
+  // Command: init
   program
     .command('init [directory]')
     .description('Initialize .context structure and bridge files')
@@ -46,14 +46,14 @@ export function run() {
     .option('--dry-run', 'Show what would be done without executing')
     .action(initCommand);
 
-  // Comando: centralize
+  // Command: centralize
   program
     .command('centralize [directory]')
     .description('Find and move scattered skills to .context/skills/')
     .option('--dry-run', 'Show what would be done without executing')
     .action(centralizeCommand);
 
-  // Comando: clean
+  // Command: clean
   program
     .command('clean [directory]')
     .description('Remove redundant editor folders that duplicate skills/rules')
@@ -61,14 +61,14 @@ export function run() {
     .option('--dry-run', 'Show what would be done without executing')
     .action(cleanCommand);
 
-  // Comando: doctor
+  // Command: doctor
   program
     .command('doctor [directory]')
     .description('Check integrity of .context and bridge files, offer repairs')
     .option('--fix', 'Automatically fix issues found')
     .action(doctorCommand);
 
-  // Comando: update
+  // Command: update
   program
     .command('update [directory]')
     .description('Regenerate bridge files with latest templates')
@@ -76,13 +76,13 @@ export function run() {
     .option('-f, --force', 'Force update even if files exist')
     .action(updateCommand);
 
-  // Comando: add
+  // Command: add
   program
     .command('add <skill-name>')
     .description('Download and install a skill from npm')
     .option('-d, --directory <dir>', 'Target project directory', '.')
     .action(addCommand);
 
-  // Parsear argumentos
+  // Parse arguments
   program.parse();
 }

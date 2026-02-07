@@ -1,6 +1,6 @@
 ---
 name: managing-agents
-description: Configurar y actualizar el archivo AGENTS.md de contexto para agentes AI. Usar cuando se configura contexto de agente o se modifican instrucciones.
+description: Configurar y sincronizar AGENTS.md con los archivos de .context/. Usar al configurar contexto de agente, modificar instrucciones, o después de cambios en rules/skills.
 ---
 
 # Gestionando Contexto de Agentes
@@ -10,16 +10,26 @@ Configurar el archivo AGENTS.md que orienta a los agentes AI en tu proyecto.
 ## Cuándo usar
 
 - Configurar contexto de agente AI para un nuevo proyecto
-- Actualizar instrucciones de agente
-- Añadir nuevas fuentes de conocimiento para agentes
+- Después de añadir nuevas reglas a `.context/rules/`
+- Después de añadir nuevas skills a `.context/skills/`
+- Después de actualizar arquitectura o estado del proyecto
 - Cambiar cómo deben comportarse los agentes en tu proyecto
 
 ## Propósito de AGENTS.md
 
-El archivo AGENTS.md es el punto de entrada para agentes AI. Les dice:
-- Qué hace el proyecto
-- Dónde encontrar información crítica
-- Cómo comportarse y qué reglas seguir
+El archivo AGENTS.md es el **punto de entrada universal** para TODOS los agentes AI:
+- Cursor, Copilot, Claude, Gemini, Windsurf todos leen este archivo
+- Proporciona una única fuente de verdad para el contexto del proyecto
+- Indexa todo el contenido de `.context/`
+
+## Disparador de Auto-Sync
+
+**Después de modificar cualquier archivo en `.context/`**, verifica si AGENTS.md necesita actualización:
+
+1. Escanear `.context/rules/` para todos los archivos `.md`
+2. Escanear `.context/skills/` para todos los archivos `SKILL.md`
+3. Actualizar la sección de Índice de Conocimiento si hay cambios
+4. Mantener AGENTS.md bajo 50 líneas
 
 ## Plantilla Estándar
 
@@ -31,15 +41,29 @@ Tu objetivo es ayudar a construir, refactorizar y mantener código siguiendo nue
 
 ## Índice de Conocimiento
 
-Antes de escribir código, carga contexto de:
+| Área | Ruta | Descripción |
+|------|------|-------------|
+| Arquitectura | `.context/architecture.md` | Estructura del proyecto |
+| Reglas | `.context/rules/` | Estándares de código |
+| Skills | `.context/skills/` | Instrucciones reutilizables |
+| Estado | `.context/project_state.md` | Trabajo actual |
+| Memoria | `.context/memory/` | Persistencia de sesión |
 
-- **Arquitectura:** `.context/architecture.md`
-- **Reglas:** `.context/rules/coding-standards.md`
-- **Skills:** `.context/skills/`
+## Reglas Activas
 
-## Estado Actual
+- [coding-standards](.context/rules/coding-standards.md)
 
-Consulta `.context/project_state.md` para el estado actual del trabajo.
+## Skills Disponibles
+
+- [generating-skills](.context/skills/generating-skills/SKILL.md)
+- [managing-agents](.context/skills/managing-agents/SKILL.md)
+...
+
+## Principios
+
+- Seguir todas las reglas en `.context/rules/`
+- Revisar estado del proyecto antes de empezar
+- Actualizar memory bank al finalizar sesión
 ```
 
 ## Mejores prácticas
@@ -48,15 +72,15 @@ Consulta `.context/project_state.md` para el estado actual del trabajo.
 
 - Mantener AGENTS.md conciso (menos de 50 líneas)
 - Apuntar a archivos detallados en vez de duplicar contenido
-- Actualizar cuando cambia la estructura del proyecto
-- Incluir ruta a reglas y convenciones
+- Actualizar cuando cambia la estructura de `.context/`
+- Incluir tabla de contenidos hacia todas las áreas de contexto
 
 ### ❌ Evitar
 
 - Poner documentación detallada en AGENTS.md
 - Rutas de archivo desactualizadas
 - Instrucciones genéricas sin especificidad del proyecto
-- Información conflictiva entre archivos
+- Olvidar listar nuevas reglas o skills
 
 ## Ubicación
 
@@ -64,11 +88,12 @@ AGENTS.md debe estar en la raíz del proyecto:
 
 ```
 proyecto/
-├── AGENTS.md           # Punto de entrada para agentes AI
+├── AGENTS.md           # Punto de entrada (hub universal)
 ├── .context/           # Contexto detallado
 │   ├── architecture.md
 │   ├── project_state.md
 │   ├── rules/
-│   └── skills/
+│   ├── skills/
+│   └── memory/
 └── src/
 ```
