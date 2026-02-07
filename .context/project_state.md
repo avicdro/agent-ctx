@@ -21,8 +21,8 @@ The project is in **active development (v1.0.1)** with a stable core feature set
 
 ## In Progress (Current Sprint)
 
-- [ ] Translate README.md to English
-- [ ] Translate .context/ files to English
+- [x] Translate README.md to English
+- [x] Translate .context/ files to English
 - [ ] Fix GitHub Actions CI/CD errors
 - [ ] Improve error handling and user messages
 

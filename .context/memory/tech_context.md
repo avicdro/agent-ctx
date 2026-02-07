@@ -34,7 +34,11 @@ description: Technical stack and dependencies - semi-static, updates with major 
 |---------|---------|
 | `typescript` | TypeScript compiler |
 | `tsx` | Run TypeScript files directly in development |
-| `eslint` | Code linting and style enforcement |
+| `eslint` | Code linting with @typescript-eslint |
+| `prettier` | Code formatting |
+| `husky` | Git hooks management |
+| `lint-staged` | Run linters on staged files only |
+| `@commitlint/cli` | Conventional commit enforcement |
 | `@types/node` | Node.js type definitions |
 | `@types/inquirer` | Inquirer type definitions |
 | `@types/figlet` | Figlet type definitions |

@@ -5,24 +5,28 @@ description: Current session state - dynamic, updates frequently during developm
 
 # Active Context
 
-> Last updated: 2026-02-04
+> Last updated: 2026-02-07
 
 ## Current Focus
 
-Internationalization and documentation cleanup. The immediate priorities are:
-1. Translating all files to English (README, .context/, comments)
-2. Fixing CI/CD pipeline errors in GitHub Actions
-3. Clarifying the Skills and MCP distribution strategy
+Code quality and development standards. Completed setup of:
+1. ✅ ESLint with @typescript-eslint for linting
+2. ✅ Prettier for code formatting
+3. ✅ Husky + lint-staged for pre-commit hooks
+4. ✅ Commitlint for conventional commits
+5. ✅ NVM (.nvmrc) for Node.js version standardization
+6. ✅ Translated all Spanish comments to English
 
 ## Recent Changes
 
-- Migrated codebase from JavaScript to TypeScript
-- Implemented Unified Context Schema (UCS) architecture
-- Removed legacy bridge file formats (now editors read AGENTS.md directly)
-- Added Memory Bank pattern with `.context/memory/` files
-- Cleaned up init command to offer quick start option
-- Added ASCII art branding with Figlet
-- Published v1.0.1 to npm with provenance
+- Added ESLint configuration with TypeScript support
+- Added Prettier for consistent code formatting
+- Configured Husky with pre-commit hooks
+- Added lint-staged for incremental linting
+- Added Commitlint for conventional commit messages
+- Created .nvmrc for Node.js version pinning
+- Translated all Spanish comments to English in source files
+- Removed legacy skill templates (api, git, react, testing)
 
 ## Open Questions
 
@@ -39,11 +43,11 @@ Internationalization and documentation cleanup. The immediate priorities are:
 
 ## Next Steps
 
-1. [x] Populate .context/ files with actual project information
-2. [ ] Translate README.md to English
-3. [ ] Debug and fix GitHub Actions workflow
-4. [ ] Add CONTRIBUTING.md for new contributors
-5. [ ] Document custom template creation process
+1. [x] Setup code quality tooling (ESLint, Prettier, Husky)
+2. [x] Translate source code comments to English
+3. [ ] Translate README.md to English
+4. [ ] Debug and fix GitHub Actions workflow
+5. [ ] Add CONTRIBUTING.md for new contributors
 
 ---
 

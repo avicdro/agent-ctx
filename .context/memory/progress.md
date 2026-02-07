@@ -55,6 +55,16 @@ description: Development progress tracking - dynamic, updates with each mileston
 
 ## Changelog
 
+### 2026-02-07
+
+- Added: ESLint configuration with @typescript-eslint
+- Added: Prettier with project-specific settings
+- Added: Husky with pre-commit hooks and lint-staged
+- Added: Commitlint for conventional commit enforcement
+- Added: .nvmrc for Node.js version standardization
+- Changed: All Spanish comments translated to English
+- Removed: Legacy skill templates (skill-api, skill-git, skill-react, skill-testing)
+
 ### 2026-02-04
 
 - Added: .context/ files populated with actual project information
