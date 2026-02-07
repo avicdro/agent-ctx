@@ -45,8 +45,10 @@ Code quality and development standards. Completed setup of:
 
 1. [x] Setup code quality tooling (ESLint, Prettier, Husky)
 2. [x] Translate source code comments to English
-3. [ ] Translate README.md to English
-4. [ ] Debug and fix GitHub Actions workflow
+3. [ ] **URGENT:** Debug and fix GitHub Actions workflow (CI/CD)
+4. [ ] Rename files to VS Code convention (kebab-case)
+5. [ ] Implement VS Code configuration for custom file sources
+6. [ ] Translate README.md to English
 5. [ ] Add CONTRIBUTING.md for new contributors
 
 ---
