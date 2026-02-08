@@ -1,5 +1,5 @@
 /**
- * @fileoverview Generación de archivos puente para diferentes editores/agentes AI
+ * @fileoverview Bridge file generation for different editors/AI agents
  * @module lib/bridges
  */
 
@@ -11,8 +11,10 @@ import { t } from './i18n.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// Leer versión desde package.json
-const pkg = JSON.parse(readFileSync(join(__dirname, '../../package.json'), 'utf-8')) as { version: string };
+// Read version from package.json
+const pkg = JSON.parse(readFileSync(join(__dirname, '../../package.json'), 'utf-8')) as {
+  version: string;
+};
 
 const VERSION: string = pkg.version;
 
@@ -23,7 +25,7 @@ export interface BridgeConfig {
 }
 
 /**
- * Genera contenido para .cursor/rules/global.md (nuevo formato con frontmatter)
+ * Generates content for .cursor/rules/global.md (new format with frontmatter)
  */
 export function getCursorGlobalRules(): string {
   return `---
@@ -52,7 +54,7 @@ Please read AGENTS.md for the complete project overview.
 // Legacy generators removed - editors now read AGENTS.md directly
 
 /**
- * Genera contenido de CLAUDE.md para Claude Code
+ * Generates content for CLAUDE.md for Claude Code
  */
 export function getClaudeMd(): string {
   return `# Claude Code Context
@@ -76,7 +78,7 @@ ${t('bridge.claudeReadContext')}
 }
 
 /**
- * Genera contenido de .github/copilot-instructions.md para GitHub Copilot (global)
+ * Generates content for .github/copilot-instructions.md for GitHub Copilot (global)
  */
 export function getCopilotInstructions(): string {
   return `# GitHub Copilot Instructions
@@ -100,7 +102,7 @@ ${t('bridge.copilotContextDesc')}
 }
 
 /**
- * Genera contenido para .github/instructions/context.instructions.md (escopado)
+ * Generates content for .github/instructions/context.instructions.md (scoped)
  */
 export function getCopilotContextInstructions(): string {
   return `---
@@ -122,7 +124,7 @@ Before making any changes, please review:
 // Aider conventions generator removed - reads AGENTS.md directly
 
 /**
- * Genera contenido de .agent/rules/context.md para Antigravity
+ * Generates content for .agent/rules/context.md for Antigravity
  */
 export function getAntigravityRules(): string {
   return `# Project Context Rules
@@ -152,37 +154,37 @@ Please read AGENTS.md for the complete project overview.
 }
 
 /**
- * Mapa de todos los archivos puente disponibles (solo formatos modernos)
- * Los formatos legacy han sido eliminados - los editores ahora leen AGENTS.md directamente
+ * Map of all available bridge files (only modern formats)
+ * Legacy formats have been removed - editors now read AGENTS.md directly
  */
 export const BRIDGE_FILES: Record<string, BridgeConfig> = {
-  // Cursor - Formato moderno con frontmatter
+  // Cursor - Modern format with frontmatter
   '.cursor/rules/global.md': {
     name: 'Cursor (Modern)',
     generator: getCursorGlobalRules,
-    needsDir: '.cursor/rules'
+    needsDir: '.cursor/rules',
   },
   // Claude Code
   'CLAUDE.md': {
     name: 'Claude Code',
-    generator: getClaudeMd
+    generator: getClaudeMd,
   },
   // Copilot - Global
   '.github/copilot-instructions.md': {
     name: 'GitHub Copilot (Global)',
     generator: getCopilotInstructions,
-    needsDir: '.github'
+    needsDir: '.github',
   },
-  // Copilot - Escopado
+  // Copilot - Scoped
   '.github/instructions/context.instructions.md': {
     name: 'GitHub Copilot (Scoped)',
     generator: getCopilotContextInstructions,
-    needsDir: '.github/instructions'
+    needsDir: '.github/instructions',
   },
-  // Antigravity - Reglas de proyecto
+  // Antigravity - Project rules
   '.agent/rules/context.md': {
     name: 'Antigravity',
     generator: getAntigravityRules,
-    needsDir: '.agent/rules'
-  }
+    needsDir: '.agent/rules',
+  },
 };

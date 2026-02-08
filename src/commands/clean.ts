@@ -1,6 +1,6 @@
 /**
- * Comando: clean
- * Elimina carpetas redundantes de editores
+ * Command: clean
+ * Removes redundant editor folders
  */
 
 import { join } from 'path';
@@ -16,118 +16,119 @@ export interface CleanOptions {
 }
 
 /**
- * Ejecuta el comando clean
+ * Executes the clean command
  */
 export async function cleanCommand(directory: string, options: CleanOptions): Promise<void> {
   try {
     const targetDir = resolveDirectory(directory);
     validateNotRoot(targetDir);
-    
+
     const { yes, dryRun } = options;
-    
+
     // Header
-    logger.header('🧹 Escaneo de carpetas de agentes redundantes');
-    logger.log(`\n📁 Directorio de trabajo: ${targetDir}`);
-    
+    logger.header('🧹 Scanning for redundant agent folders');
+    logger.log(`\n📁 Working directory: ${targetDir}`);
+
     if (dryRun) {
-      logger.log('🔍 Modo DRY-RUN (solo simulación)');
+      logger.log('🔍 DRY-RUN mode (simulation only)');
     }
     if (yes) {
       logger.log('🤖 Modo AUTO-CONFIRM');
     }
-    
-    // Buscar carpetas candidatas a borrar
-    const spinner = startSpinner('Buscando carpetas redundantes...');
-    
+
+    // Find folders to delete
+    startSpinner('Searching for redundant folders...');
+
     const items = readdirSync(targetDir);
     const candidates = [];
-    
+
     for (const item of items) {
-      // Solo carpetas ocultas
+      // Only hidden folders
       if (!item.startsWith('.')) continue;
-      
-      // Verificar lista blanca
+
+      // Check whitelist
       if (WHITELIST.includes(item)) continue;
-      
+
       const itemPath = join(targetDir, item);
-      
+
       try {
         const stat = statSync(itemPath);
         if (!stat.isDirectory()) continue;
       } catch {
         continue;
       }
-      
-      // Verificar si tiene skills o rules adentro
+
+      // Check if it has skills or rules inside
       const hasSkills = existsSync(join(itemPath, 'skills'));
       const hasRules = existsSync(join(itemPath, 'rules'));
-      
+
       if (hasSkills || hasRules) {
         candidates.push({
           path: itemPath,
           name: item,
-          contents: [hasSkills && 'skills', hasRules && 'rules'].filter(Boolean).join(', ')
+          contents: [hasSkills && 'skills', hasRules && 'rules'].filter(Boolean).join(', '),
         });
       }
     }
-    
-    // Verificar si encontramos algo
+
+    // Check if we found anything
     if (candidates.length === 0) {
-      succeedSpinner('¡Todo limpio! No se encontraron carpetas redundantes');
+      succeedSpinner('All clean! No redundant folders found');
       return;
     }
-    
-    succeedSpinner(`Encontradas ${candidates.length} carpeta(s) redundantes`);
-    
-    // Listar candidatos
+
+    succeedSpinner(`Found ${candidates.length} redundant folder(s)`);
+
+    // List candidates
     logger.newline();
     logger.divider();
-    
+
     for (const candidate of candidates) {
-      logger.log(`   ❌ ${candidate.name}  (contiene: ${candidate.contents})`);
+      logger.log(`   ❌ ${candidate.name}  (contains: ${candidate.contents})`);
     }
-    
+
     logger.divider();
-    
-    // Modo dry-run
+
+    // Dry-run mode
     if (dryRun) {
-      logger.dryRun('Se eliminarían las carpetas listadas arriba.');
-      logger.log('Ejecuta sin --dry-run para aplicar los cambios.');
+      logger.dryRun('The folders listed above would be deleted.');
+      logger.log('Run without --dry-run to apply changes.');
       return;
     }
-    
-    // Confirmación
+
+    // Confirmation
     if (!yes) {
-      logger.log('\n⚠️  Estas carpetas NO son \'.context\' y parecen ser generadas por herramientas externas.');
-      
+      logger.log(
+        "\n⚠️  Estas carpetas NO son '.context' y parecen ser generadas por herramientas externas."
+      );
+
       const { confirm } = await inquirer.prompt([
         {
           type: 'confirm',
           name: 'confirm',
-          message: '¿Estás seguro de que deseas ELIMINAR estas carpetas permanentemente?',
-          default: false
-        }
+          message: 'Are you sure you want to PERMANENTLY DELETE these folders?',
+          default: false,
+        },
       ]);
-      
+
       if (!confirm) {
-        logger.success('🛑 Operación cancelada. No se ha borrado nada.');
+        logger.success('🛑 Operation cancelled. Nothing was deleted.');
         return;
       }
     }
-    
-    // Eliminar
-    const deleteSpinner = startSpinner('Eliminando carpetas...');
-    
+
+    // Delete
+    startSpinner('Deleting folders...');
+
     for (const candidate of candidates) {
       rmSync(candidate.path, { recursive: true });
     }
-    
-    succeedSpinner(`Eliminadas ${candidates.length} carpeta(s)`);
-    
-    // Resumen final
-    logger.summary('✨ Limpieza completada exitosamente');
+
+    succeedSpinner(`Deleted ${candidates.length} folder(s)`);
+
+    // Final summary
+    logger.summary('✨ Cleanup completed successfully');
     logger.log(`\nAhora solo usa '.context/'.`);
-    
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     logger.error(message);

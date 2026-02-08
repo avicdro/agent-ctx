@@ -1,59 +1,60 @@
-# agent-ctx 🤖
+# agent-ctx
 
-> CLI para inicializar y gestionar contexto de agentes AI en tus proyectos
+> CLI to initialize and manage AI agent context in your projects
 
 [![npm version](https://badge.fury.io/js/agent-ctx.svg)](https://www.npmjs.com/package/agent-ctx)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## ¿Qué es agent-ctx?
+**[Español](./docs/README.es.md)** | English
 
-**agent-ctx** es una herramienta CLI que configura una estructura de contexto estandarizada (`.context/`) para que cualquier agente AI (Cursor, Windsurf, Claude, Copilot, Cline, etc.) entienda tu proyecto de forma consistente.
+## What is agent-ctx?
 
-### ¿Por qué lo necesitas?
+**agent-ctx** is a CLI tool that sets up a standardized context structure (`.context/`) so any AI agent (Cursor, Windsurf, Claude, Copilot, Cline, etc.) can understand your project consistently.
 
-- 🪟 **Compatible con Windows, Mac y Linux** - Sin dependencia de bash
-- 📦 **Fácil de distribuir** - `npx agent-ctx init` y listo
-- 🔄 **Centralización** - Una sola fuente de verdad para todos los agentes
-- 🏥 **Auto-reparación** - Detecta y arregla archivos rotos
-- 📚 **Skills reutilizables** - Estructura modular para compartir conocimiento
+### Why use it?
 
-## Instalación
+- **Cross-platform** — Works on Windows, Mac, and Linux without bash dependencies
+- **Easy to distribute** — Just run `npx agent-ctx init` and you're done
+- **Single source of truth** — Centralized context for all your agents
+- **Self-healing** — Detects and repairs broken configuration files
+- **Modular skills** — Reusable skill structure for sharing knowledge across projects
+
+## Installation
 
 ```bash
-# Uso directo con npx (recomendado)
+# Direct usage with npx (recommended)
 npx agent-ctx init
 
-# O instalación global
+# Or install globally
 npm install -g agent-ctx
 ```
 
-## Comandos
+## Commands
 
 ### `agent-ctx init`
 
-Inicializa la estructura `.context/` y genera archivos puente para diferentes editores.
+Initializes the `.context/` structure and generates bridge files for different editors.
 
 ```bash
-npx agent-ctx init                    # Directorio actual
-npx agent-ctx init ./mi-proyecto      # Directorio específico
-npx agent-ctx init --yes              # Modo no interactivo
-npx agent-ctx init --force            # Sobrescribe existentes
-npx agent-ctx init --dry-run          # Solo muestra qué haría
+npx agent-ctx init                    # Current directory
+npx agent-ctx init ./my-project       # Specific directory
+npx agent-ctx init --yes              # Non-interactive mode
+npx agent-ctx init --force            # Overwrite existing files
+npx agent-ctx init --dry-run          # Preview changes only
 ```
-
 
 ### `agent-ctx update`
 
-Regenera los archivos puente con las últimas plantillas sin tocar `.context/`.
+Regenerates bridge files with the latest templates without touching `.context/`.
 
 ```bash
-npx agent-ctx update                  # Interactivo
-npx agent-ctx update --yes            # Actualiza todos
+npx agent-ctx update                  # Interactive
+npx agent-ctx update --yes            # Update all
 ```
 
 ### `agent-ctx centralize`
 
-Busca skills dispersas en carpetas de editores (`.cursor/skills`, `.windsurf/skills`, etc.) y las mueve a `.context/skills/`.
+Finds scattered skills in editor folders (`.cursor/skills`, `.windsurf/skills`, etc.) and moves them to `.context/skills/`.
 
 ```bash
 npx agent-ctx centralize
@@ -62,50 +63,50 @@ npx agent-ctx centralize --dry-run
 
 ### `agent-ctx clean`
 
-Elimina carpetas redundantes de editores que duplican skills/rules.
+Removes redundant editor folders that duplicate skills/rules.
 
 ```bash
 npx agent-ctx clean
-npx agent-ctx clean --yes             # Sin confirmación
+npx agent-ctx clean --yes             # Skip confirmation
 npx agent-ctx clean --dry-run
 ```
 
 ### `agent-ctx doctor`
 
-Verifica la integridad de `.context/` y archivos puente, ofrece reparaciones.
+Checks the integrity of `.context/` and bridge files, offers repairs.
 
 ```bash
-npx agent-ctx doctor                  # Solo diagnóstico
-npx agent-ctx doctor --fix            # Repara automáticamente
+npx agent-ctx doctor                  # Diagnosis only
+npx agent-ctx doctor --fix            # Auto-repair
 ```
 
-## Flags globales
+## Global Flags
 
-| Flag | Descripción |
+| Flag | Description |
 |------|-------------|
-| `-q, --quiet` | Suprime output no esencial |
-| `-v, --version` | Muestra versión |
-| `-h, --help` | Muestra ayuda |
+| `-q, --quiet` | Suppress non-essential output |
+| `-v, --version` | Show version |
+| `-h, --help` | Show help |
 
-## Configuración por proyecto
+## Project Configuration
 
-Crea un archivo `.agent-ctx.json` en la raíz del proyecto:
+Create an `.agent-ctx.json` file in your project root:
 
 ```json
 {
   "editors": ["cursor", "claude", "copilot"],
-  "language": "es",
+  "language": "en",
   "backups": true
 }
 ```
 
-## Estructura generada
+## Generated Structure
 
 ```
-tu-proyecto/
+your-project/
 ├── .context/
-│   ├── architecture.md       # Stack y estructura del proyecto
-│   ├── project_state.md      # Estado actual, TODOs, bugs
+│   ├── architecture.md       # Stack and project structure
+│   ├── project_state.md      # Current state, TODOs, bugs
 │   ├── rules/
 │   │   └── coding-standards.md
 │   ├── skills/
@@ -114,19 +115,23 @@ tu-proyecto/
 │   │   └── README.md
 │   └── mcp/
 │       └── README.md
-├── AGENTS.md                 # Índice maestro para agentes
-├── CLAUDE.md                 # Instrucciones para Claude
-├── .cursorrules              # Puente para Cursor
-├── .windsurfrules            # Puente para Windsurf
-├── .clinerules               # Puente para Cline
-├── .roomodes                 # Puente para Roo
+├── AGENTS.md                 # Master index for agents
+├── CLAUDE.md                 # Instructions for Claude Code
+├── .cursor/
+│   └── rules/
+│       └── global.md         # Bridge for Cursor (modern format)
+├── .agent/
+│   └── rules/
+│       └── context.md        # Bridge for Antigravity
 └── .github/
-    └── copilot-instructions.md  # Puente para GitHub Copilot
+    ├── copilot-instructions.md           # Bridge for Copilot (global)
+    └── instructions/
+        └── context.instructions.md       # Bridge for Copilot (scoped)
 ```
 
-## Contribuir
+## Contributing
 
-¿Encontraste un bug o tienes una idea? ¡Abre un issue o PR!
+Found a bug or have an idea? Feel free to open an issue or PR.
 
 ## License
 
