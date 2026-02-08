@@ -10,7 +10,7 @@ description: Technical stack and dependencies - semi-static, updates with major 
 | Layer | Technology | Version |
 |-------|------------|---------|
 | Language | TypeScript | ^5.9.3 |
-| Runtime | Node.js | ≥18.0.0 |
+| Runtime | Node.js | ≥20.0.0 |
 | Module System | ESM | Native |
 | CLI Framework | Commander.js | ^12.1.0 |
 | Build | tsc | ^5.9.3 |

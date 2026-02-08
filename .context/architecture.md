@@ -9,7 +9,7 @@
 ### Runtime
 | Technology | Version | Purpose |
 |------------|---------|---------|
-| Node.js | ≥18.0.0 | Runtime environment |
+| Node.js | ≥20.0.0 | Runtime environment |
 | TypeScript | ^5.9.3 | Type-safe JavaScript |
 | ES Modules | ESM | Module system |
 
