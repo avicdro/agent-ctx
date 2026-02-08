@@ -130,9 +130,9 @@ export async function doctorCommand(directory: string, options: DoctorOptions): 
       warnSpinner(`Missing ${fileIssues} context file(s) (optional)`);
     }
 
-    // 3. Verificar skills registrados en config vs archivos reales
+    // 3. Verify registered skills in config vs actual files
     if (configExists) {
-      startSpinner('Verificando skills instalados...');
+      startSpinner('Verifying installed skills...');
 
       let skillsMissing = 0;
       let skillsOk = 0;
@@ -169,16 +169,16 @@ export async function doctorCommand(directory: string, options: DoctorOptions): 
       }
 
       if (skillsMissing === 0 && newSkills === 0) {
-        succeedSpinner(`${skillsOk} skills verificados`);
+        succeedSpinner(`${skillsOk} skills verified`);
       } else if (skillsMissing > 0) {
-        warnSpinner(`${skillsOk} OK, ${skillsMissing} faltan, ${newSkills} nuevos disponibles`);
+        warnSpinner(`${skillsOk} OK, ${skillsMissing} missing, ${newSkills} new available`);
       } else {
-        succeedSpinner(`${skillsOk} skills OK - ${newSkills} nuevos disponibles del CLI`);
+        succeedSpinner(`${skillsOk} skills OK - ${newSkills} new available from CLI`);
       }
     }
 
-    // 4. Verificar archivos puente
-    startSpinner('Verificando archivos puente...');
+    // 4. Verify bridge files
+    startSpinner('Verifying bridge files...');
 
     let bridgeOk = 0;
     let bridgeMissing = 0;
@@ -188,7 +188,7 @@ export async function doctorCommand(directory: string, options: DoctorOptions): 
       const fullPath = join(targetDir, file);
 
       if (existsSync(fullPath)) {
-        // Verificar que contenga referencias a .context
+        // Verify that it contains references to .context
         const content = readFileSync(fullPath, 'utf-8');
         if (content.includes('.context') || content.includes('AGENTS.md')) {
           bridgeOk++;
@@ -279,7 +279,7 @@ export async function doctorCommand(directory: string, options: DoctorOptions): 
       succeedSpinner(`${fixed} issue(s) repaired`);
       logger.summary('🔧 Repairs applied');
 
-      // Si hay issues de bridges, indicar que use update
+      // If there are bridge issues, indicate to use update
       const bridgeIssues = issues.filter(
         (i) => i.type === 'missing_bridge' || i.type === 'outdated_bridge'
       );

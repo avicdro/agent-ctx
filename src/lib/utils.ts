@@ -125,7 +125,7 @@ export function writeFile(
     return true;
   }
 
-  // Crear backup si existe y hay force, y los backups están habilitados
+  // Create backup if exists and force is set, and backups are enabled
   if (existsSync(path) && force && backup) {
     copyFileSync(path, `${path}.bak`);
     if (!silent) logger.item(`${name}.bak (backup created)`);

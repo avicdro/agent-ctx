@@ -54,7 +54,7 @@ export async function updateCommand(directory: string, options: UpdateOptions): 
       )
     );
 
-    // ====== 1. DETECTAR NUEVOS SKILLS BASE ======
+    // ====== 1. DETECT NEW BASE SKILLS ======
     const newSkillsAvailable: Array<{ key: string; name: string; dest: string }> = [];
 
     for (const [skillKey, skillConfig] of Object.entries(BASE_SKILLS)) {
@@ -67,7 +67,7 @@ export async function updateCommand(directory: string, options: UpdateOptions): 
       }
     }
 
-    // ====== 2. DETECTAR NUEVAS RULES BASE ======
+    // ====== 2. DETECT NEW BASE RULES ======
     const newRulesAvailable: Array<{ key: string; dest: string }> = [];
 
     for (const [templateKey, templateConfig] of Object.entries(TEMPLATE_MAPPINGS)) {
@@ -82,7 +82,7 @@ export async function updateCommand(directory: string, options: UpdateOptions): 
     const installedSkills: string[] = [];
     const installedRules: string[] = [];
 
-    // ====== 3. OFRECER INSTALAR NUEVOS SKILLS ======
+    // ====== 3. OFFER TO INSTALL NEW SKILLS ======
     if (newSkillsAvailable.length > 0) {
       logger.log(`\n📦 ${chalk.yellow(t('update.newSkillsAvailable'))}`);
       for (const skill of newSkillsAvailable) {
@@ -126,7 +126,7 @@ export async function updateCommand(directory: string, options: UpdateOptions): 
       logger.log(`\n✅ ${t('update.allSkillsInstalled')}`);
     }
 
-    // ====== 4. OFRECER INSTALAR NUEVAS RULES ======
+    // ====== 4. OFFER TO INSTALL NEW RULES ======
     if (newRulesAvailable.length > 0) {
       logger.log(`\n📜 ${chalk.yellow(t('update.newRulesAvailable'))}`);
       for (const rule of newRulesAvailable) {
@@ -167,7 +167,7 @@ export async function updateCommand(directory: string, options: UpdateOptions): 
       logger.log(`✅ ${t('update.allRulesInstalled')}`);
     }
 
-    // ====== 5. ACTUALIZAR BRIDGES (comportamiento original) ======
+    // ====== 5. UPDATE BRIDGES (original behavior) ======
     let selectedEditors: string[] = [];
 
     if (!yes) {
@@ -208,7 +208,7 @@ export async function updateCommand(directory: string, options: UpdateOptions): 
       ]);
       selectedEditors = answers.editors;
     } else {
-      // Con --yes, actualiza todos los existentes
+      // With --yes, update all existing ones
       selectedEditors = Object.keys(BRIDGE_FILES).filter((file) =>
         existsSync(join(targetDir, file))
       );
