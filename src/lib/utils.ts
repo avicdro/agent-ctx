@@ -88,7 +88,6 @@ export function copyFile(src: string, dest: string, options: FileOperationOption
   }
 
   // Create parent directories if needed (for skill folder structure)
-  // Create parent directories if needed (for skill folder structure)
   const parentDir = resolve(dest, '..');
   if (!existsSync(parentDir)) {
     mkdirSync(parentDir, { recursive: true });
