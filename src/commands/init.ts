@@ -23,6 +23,7 @@ import {
   hasConfig,
   saveConfig,
   getCliVersion,
+  EDITOR_MAP,
   type AgentCtxConfig,
 } from '../lib/config.js';
 
@@ -264,9 +265,14 @@ export async function initCommand(directory: string, options: InitOptions): Prom
 
     // 5. Save configuration (.agent-ctx.json)
     if (!dryRun) {
+      // Convert bridge file paths to editor IDs
+      const editorIds = selectedEditors
+        .map((file) => EDITOR_MAP[file] || file)
+        .filter((id, index, self) => self.indexOf(id) === index); // deduplicate
+
       const newConfig: AgentCtxConfig = {
         version: getCliVersion(),
-        editors: selectedEditors,
+        editors: editorIds,
         language: selectedLanguage,
         backups: existingConfig.backups,
         customTemplates: existingConfig.customTemplates,

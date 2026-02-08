@@ -72,8 +72,7 @@ export function run() {
   program
     .command('update [directory]')
     .description('Regenerate bridge files with latest templates')
-    .option('-y, --yes', 'Non-interactive mode (update all)')
-    .option('-f, --force', 'Force update even if files exist')
+    .option('-y, --yes', 'Non-interactive mode (update existing bridges)')
     .action(updateCommand);
 
   // Command: add

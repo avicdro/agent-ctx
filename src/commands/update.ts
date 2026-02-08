@@ -19,10 +19,10 @@ import {
   type AgentCtxConfig,
 } from '../lib/config.js';
 import { BASE_SKILLS, TEMPLATE_MAPPINGS, copyTemplate } from '../lib/templates.js';
+import { t } from '../lib/i18n.js';
 
 export interface UpdateOptions {
   yes?: boolean;
-  force?: boolean;
 }
 
 /**
@@ -40,15 +40,19 @@ export async function updateCommand(directory: string, options: UpdateOptions): 
     const config = loadConfig(targetDir);
 
     // Header
-    logger.header('🔄 agent-ctx Update');
-    logger.log(`\n📁 Directory: ${targetDir}`);
+    logger.header(`🔄 ${t('update.header')}`);
+    logger.log(`\n📁 ${t('update.directory')} ${targetDir}`);
 
     if (!configExists) {
-      logger.warning('⚠️  No .agent-ctx.json found - run `agent-ctx init` first');
+      logger.warning(`⚠️  ${t('update.noConfig')}`);
       process.exit(1);
     }
 
-    logger.log(chalk.dim(`📄 Config version: ${config.version || 'unknown'} → ${getCliVersion()}`));
+    logger.log(
+      chalk.dim(
+        `📄 ${t('update.configVersion', { old: config.version || 'unknown', new: getCliVersion() })}`
+      )
+    );
 
     // ====== 1. DETECTAR NUEVOS SKILLS BASE ======
     const newSkillsAvailable: Array<{ key: string; name: string; dest: string }> = [];
@@ -80,12 +84,12 @@ export async function updateCommand(directory: string, options: UpdateOptions): 
 
     // ====== 3. OFRECER INSTALAR NUEVOS SKILLS ======
     if (newSkillsAvailable.length > 0) {
-      logger.log('\n📦 ' + chalk.yellow('New base skills available from CLI:'));
+      logger.log(`\n📦 ${chalk.yellow(t('update.newSkillsAvailable'))}`);
       for (const skill of newSkillsAvailable) {
-        logger.item(`${skill.name} ${chalk.dim('[RECOMENDADO]')}`);
+        logger.item(`${skill.name} ${chalk.dim(t('update.recommended'))}`);
       }
 
-      logger.log(chalk.dim('\n(Your existing skills will not be overwritten or deleted)'));
+      logger.log(chalk.dim(`\n${t('update.existingSkillsNote')}`));
 
       let installNewSkills = yes; // With --yes, install automatically
 
@@ -94,7 +98,7 @@ export async function updateCommand(directory: string, options: UpdateOptions): 
           {
             type: 'confirm',
             name: 'install',
-            message: 'Install new base skills?',
+            message: t('update.installNewSkills'),
             default: true,
           },
         ]);
@@ -102,7 +106,7 @@ export async function updateCommand(directory: string, options: UpdateOptions): 
       }
 
       if (installNewSkills) {
-        startSpinner('Instalando nuevos skills...');
+        startSpinner(t('update.installingSkills'));
 
         for (const skill of newSkillsAvailable) {
           const destPath = join(targetDir, skill.dest);
@@ -116,15 +120,15 @@ export async function updateCommand(directory: string, options: UpdateOptions): 
           installedSkills.push(skill.key);
         }
 
-        succeedSpinner(`${installedSkills.length} nuevo(s) skill(s) instalado(s)`);
+        succeedSpinner(t('update.skillsInstalled', { count: installedSkills.length }));
       }
     } else {
-      logger.log('\n✅ Todos los skills base están instalados');
+      logger.log(`\n✅ ${t('update.allSkillsInstalled')}`);
     }
 
     // ====== 4. OFRECER INSTALAR NUEVAS RULES ======
     if (newRulesAvailable.length > 0) {
-      logger.log('\n📜 ' + chalk.yellow('New base rules available:'));
+      logger.log(`\n📜 ${chalk.yellow(t('update.newRulesAvailable'))}`);
       for (const rule of newRulesAvailable) {
         logger.item(rule.key.replace('rules/', ''));
       }
@@ -136,7 +140,7 @@ export async function updateCommand(directory: string, options: UpdateOptions): 
           {
             type: 'confirm',
             name: 'install',
-            message: 'Install new base rules?',
+            message: t('update.installNewRules'),
             default: true,
           },
         ]);
@@ -144,7 +148,7 @@ export async function updateCommand(directory: string, options: UpdateOptions): 
       }
 
       if (installNewRules) {
-        startSpinner('Instalando nuevas reglas...');
+        startSpinner(t('update.installingRules'));
 
         for (const rule of newRulesAvailable) {
           const destPath = join(targetDir, rule.dest);
@@ -157,10 +161,10 @@ export async function updateCommand(directory: string, options: UpdateOptions): 
           installedRules.push(rule.key);
         }
 
-        succeedSpinner(`${installedRules.length} nueva(s) regla(s) instalada(s)`);
+        succeedSpinner(t('update.rulesInstalled', { count: installedRules.length }));
       }
     } else {
-      logger.log('✅ Todas las reglas base están instaladas');
+      logger.log(`✅ ${t('update.allRulesInstalled')}`);
     }
 
     // ====== 5. ACTUALIZAR BRIDGES (comportamiento original) ======
@@ -181,7 +185,7 @@ export async function updateCommand(directory: string, options: UpdateOptions): 
       }
 
       if (existing.length > 0 || missing.length > 0) {
-        logger.log('\n📋 Bridge files:');
+        logger.log(`\n📋 ${t('update.bridgeFiles')}`);
         for (const { file, config: c } of existing) {
           logger.item(`✅ ${file} (${c.name})`);
         }
@@ -194,7 +198,7 @@ export async function updateCommand(directory: string, options: UpdateOptions): 
         {
           type: 'checkbox',
           name: 'editors',
-          message: 'Which bridge files do you want to update/create?',
+          message: t('update.selectBridges'),
           choices: Object.entries(BRIDGE_FILES).map(([file, c]) => ({
             name: `${c.name} (${file})`,
             value: file,
@@ -211,7 +215,7 @@ export async function updateCommand(directory: string, options: UpdateOptions): 
     }
 
     if (selectedEditors.length > 0) {
-      startSpinner('Updating bridge files...');
+      startSpinner(t('update.updatingBridges'));
 
       let updated = 0;
       for (const [file, configBridge] of Object.entries(BRIDGE_FILES)) {
@@ -231,7 +235,7 @@ export async function updateCommand(directory: string, options: UpdateOptions): 
         updated++;
       }
 
-      succeedSpinner(`${updated} bridge file(s) updated`);
+      succeedSpinner(t('update.bridgesUpdated', { count: updated }));
     }
 
     // ====== 6. SAVE UPDATED CONFIGURATION ======
@@ -244,14 +248,14 @@ export async function updateCommand(directory: string, options: UpdateOptions): 
       };
 
       saveConfig(targetDir, updatedConfig);
-      logger.log('\n📄 Configuration updated in .agent-ctx.json');
+      logger.log(`\n📄 ${t('update.configUpdated')}`);
     }
 
     // Summary
-    logger.summary('✨ Update complete');
-    logger.log('\nTu proyecto ahora usa la última versión de agent-ctx.');
+    logger.summary(`✨ ${t('update.complete')}`);
+    logger.log(`\n${t('update.projectUpToDate')}`);
   } catch (error) {
-    failSpinner('Error during update');
+    failSpinner(t('update.error'));
     const message = error instanceof Error ? error.message : String(error);
     logger.error(message);
     process.exit(1);

@@ -113,12 +113,17 @@ export function getDefaultConfig(): AgentCtxConfig {
  * Bridge file name to editor name mapping
  */
 export const EDITOR_MAP: Record<string, string> = {
+  // Legacy bridges (deprecated)
   '.cursorrules': 'cursor',
   '.antigravityrules': 'antigravity',
   '.clinerules': 'cline',
   '.roomodes': 'roo',
+  // Modern bridges
+  '.cursor/rules/global.md': 'cursor',
+  '.agent/rules/context.md': 'antigravity',
   'CLAUDE.md': 'claude',
   '.github/copilot-instructions.md': 'copilot',
+  '.github/instructions/context.instructions.md': 'copilot-scoped',
 };
 
 /**
