@@ -23,6 +23,7 @@ import {
   hasConfig,
   saveConfig,
   getCliVersion,
+  EDITOR_MAP,
   type AgentCtxConfig,
 } from '../lib/config.js';
 
@@ -135,8 +136,8 @@ export async function initCommand(directory: string, options: InitOptions): Prom
       }
     }
 
-    // Preguntar por AI Bootstrap Prompt (si no es dry-run y interactivo)
-    // En modo 'quick' con --yes, asumimos TRUE por defecto (para ayudar al usuario)
+    // Ask about AI Bootstrap Prompt (if not dry-run and interactive)
+    // In 'quick' mode with --yes, we assume TRUE by default (to help the user)
     let createBootstrap = initType === 'quick';
 
     if (!yes && !dryRun) {
@@ -151,7 +152,7 @@ export async function initCommand(directory: string, options: InitOptions): Prom
       createBootstrap = bootstrapAnswer.createBootstrap;
     }
 
-    // 1. Crear estructura .context
+    // 1. Create .context structure
     startSpinner(t('spinner.creatingContext'));
 
     const contextDir = join(targetDir, '.context');
@@ -189,7 +190,7 @@ export async function initCommand(directory: string, options: InitOptions): Prom
 
     succeedSpinner(t('spinner.templatesCopied'));
 
-    // 2.5. Instalar BASE_SKILLS (skills fundamentales con estructura de carpetas)
+    // 2.5. Install BASE_SKILLS (fundamental skills with folder structure)
     startSpinner('Installing base skills...');
 
     for (const [templateName, skillConfig] of Object.entries(BASE_SKILLS)) {
@@ -205,7 +206,7 @@ export async function initCommand(directory: string, options: InitOptions): Prom
 
     succeedSpinner(`Base skills installed (${Object.keys(BASE_SKILLS).length} skills)`);
 
-    // 2.6. Instalar Memory Bank (persistencia de contexto)
+    // 2.6. Install Memory Bank (context persistence)
     startSpinner('Installing Memory Bank...');
 
     for (const [templateName, memConfig] of Object.entries(MEMORY_BANK)) {
@@ -227,7 +228,7 @@ export async function initCommand(directory: string, options: InitOptions): Prom
       for (const [file, bridgeConfig] of Object.entries(BRIDGE_FILES)) {
         if (!selectedEditors.includes(file)) continue;
 
-        // Crear directorio si es necesario
+        // Create directory if needed
         if (bridgeConfig.needsDir) {
           ensureDir(join(targetDir, bridgeConfig.needsDir), {
             dryRun,
@@ -264,9 +265,14 @@ export async function initCommand(directory: string, options: InitOptions): Prom
 
     // 5. Save configuration (.agent-ctx.json)
     if (!dryRun) {
+      // Convert bridge file paths to editor IDs
+      const editorIds = selectedEditors
+        .map((file) => EDITOR_MAP[file] || file)
+        .filter((id, index, self) => self.indexOf(id) === index); // deduplicate
+
       const newConfig: AgentCtxConfig = {
         version: getCliVersion(),
-        editors: selectedEditors,
+        editors: editorIds,
         language: selectedLanguage,
         backups: existingConfig.backups,
         customTemplates: existingConfig.customTemplates,

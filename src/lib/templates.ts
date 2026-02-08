@@ -1,5 +1,5 @@
 /**
- * @fileoverview Manejo de templates embebidos para generación de archivos
+ * @fileoverview Embedded template handling for file generation
  * @module lib/templates
  */
 

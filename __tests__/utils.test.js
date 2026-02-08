@@ -2,7 +2,7 @@
  * Tests for utils module
  */
 
-import { describe, it, beforeEach, afterEach, mock } from 'node:test';
+import { describe, it, beforeEach, afterEach } from 'node:test';
 import assert from 'node:assert/strict';
 import { mkdirSync, rmSync, existsSync, writeFileSync } from 'fs';
 import { join } from 'path';
@@ -12,7 +12,6 @@ import {
   resolveDirectory,
   validateNotRoot,
   ensureDir,
-  copyFile,
   writeFile,
   EDITOR_FOLDERS,
   WHITELIST,

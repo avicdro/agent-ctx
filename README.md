@@ -116,13 +116,17 @@ your-project/
 │   └── mcp/
 │       └── README.md
 ├── AGENTS.md                 # Master index for agents
-├── CLAUDE.md                 # Instructions for Claude
-├── .cursorrules              # Bridge for Cursor
-├── .windsurfrules            # Bridge for Windsurf
-├── .clinerules               # Bridge for Cline
-├── .roomodes                 # Bridge for Roo
+├── CLAUDE.md                 # Instructions for Claude Code
+├── .cursor/
+│   └── rules/
+│       └── global.md         # Bridge for Cursor (modern format)
+├── .agent/
+│   └── rules/
+│       └── context.md        # Bridge for Antigravity
 └── .github/
-    └── copilot-instructions.md  # Bridge for GitHub Copilot
+    ├── copilot-instructions.md           # Bridge for Copilot (global)
+    └── instructions/
+        └── context.instructions.md       # Bridge for Copilot (scoped)
 ```
 
 ## Contributing

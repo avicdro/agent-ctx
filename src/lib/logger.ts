@@ -44,12 +44,12 @@ export const logger = {
   },
 
   warning: (msg: string): void => {
-    // Warnings siempre se muestran
+    // Warnings are always shown
     console.log(chalk.yellow('⚠ ') + chalk.yellow(msg));
   },
 
   error: (msg: string): void => {
-    // Errores siempre se muestran
+    // Errors are always shown
     console.log(chalk.red('✖ ') + chalk.red(msg));
   },
 

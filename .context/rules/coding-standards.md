@@ -81,6 +81,6 @@
 Every command should:
 1. Accept a `directory` parameter (default: current directory)
 2. Support common options: `--yes`, `--force`, `--dry-run` where applicable
-3. Resolve `directory` to absolute path using `resolvePath()`
+3. Resolve `directory` to absolute path using `resolveDirectory()`
 4. Provide clear, actionable feedback to the user
 5. Return gracefully on user cancellation
