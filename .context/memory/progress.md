@@ -41,7 +41,7 @@ description: Development progress tracking - dynamic, updates with each mileston
 | i18n system implementation | ✅ Complete | t() function |
 | English templates | ✅ Complete | src/templates/en/ |
 | Spanish templates | ✅ Complete | src/templates/es/ |
-| README translation | 🔄 In Progress | Currently Spanish-only |
+| README translation | ✅ Complete | English version available |
 | .context/ translation | 🔄 In Progress | Mixed languages |
 
 ### Phase 5: CI/CD & Publishing (In Progress 🔄)
@@ -49,7 +49,7 @@ description: Development progress tracking - dynamic, updates with each mileston
 | Task | Status | Notes |
 |------|--------|-------|
 | npm publishing | ✅ Complete | v1.0.1 published |
-| GitHub Actions CI | 🔄 In Progress | Some workflow errors |
+| GitHub Actions CI | ✅ Complete | registry-url fix applied |
 | Provenance | ✅ Complete | OIDC authentication |
 | Cross-platform tests | ⬜ Not Started | Linux, Windows, macOS |
 
@@ -63,6 +63,8 @@ description: Development progress tracking - dynamic, updates with each mileston
 - Added: Commitlint for conventional commit enforcement
 - Added: .nvmrc for Node.js version standardization
 - Changed: All Spanish comments translated to English
+- Fixed: CI/CD release workflow npm authentication
+- Added: VS Code settings for project consistency
 - Removed: Legacy skill templates (skill-api, skill-git, skill-react, skill-testing)
 
 ### 2026-02-04
